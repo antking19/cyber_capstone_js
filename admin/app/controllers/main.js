@@ -216,3 +216,50 @@ const searchProduct = (keyword, productList) => {
     }
     return result;
 };
+
+/**
+ * Filter Price
+ */
+getEleId("filterPrice").addEventListener("change", () => {
+    const type = getEleId("filterPrice").value;
+
+    const promise = Api.fetchData();
+
+    promise
+        .then((result) => {
+            const productFilter = filterProduct(type, result.data);
+            renderListProduct(productFilter);
+        })
+        .catch((error) => console.log(error));
+});
+
+const filterProduct = (type, productList) => {
+    if (type === "all") {
+        return productList;
+    } else {
+        if (type === "giamDan") {
+            for (let i = 0; i < productList.length; i++) {
+                for (let j = i + 1; j < productList.length; j++) {
+                    if (productList[i].price < productList[j].price) {
+                        let temp = productList[i];
+                        productList[i] = productList[j];
+                        productList[j] = temp;
+                    }
+                }
+            }
+            return productList;
+        }
+        if (type === "tangDan") {
+            for (let i = 0; i < productList.length; i++) {
+                for (let j = i + 1; j < productList.length; j++) {
+                    if (productList[i].price > productList[j].price) {
+                        let temp = productList[i];
+                        productList[i] = productList[j];
+                        productList[j] = temp;
+                    }
+                }
+            }
+            return productList;
+        }
+    }
+};
