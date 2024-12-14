@@ -1,7 +1,11 @@
 import Api from "./../services/api.js";
 import Product from "./../models/Product.js";
+import Validation from "../models/validation.js";
 
-const getEleId = (id) => document.getElementById(id);
+export const getEleId = (id) => document.getElementById(id);
+
+// create new object from class Validation
+const validation = new Validation();
 
 const renderListProduct = (data) => {
     let content = "";
@@ -67,13 +71,15 @@ const handleEdit = (id) => {
         .catch((error) => {
             console.log(error);
         });
+
+    closeInvalid();
 };
 window.handleEdit = handleEdit;
 
 /**
- * handleUpdate
+ * getInfoProduct
  */
-const handleUpdate = (id) => {
+const getInfoProduct = (id) => {
     const name = getEleId("productName").value;
     const price = getEleId("productPrice").value;
     const screen = getEleId("productScreen").value;
@@ -82,6 +88,58 @@ const handleUpdate = (id) => {
     const img = getEleId("productImg").value;
     const type = getEleId("productType").value;
     const desc = getEleId("productDesc").value;
+
+    let isValid = true;
+    isValid &= validation.checkEmpty(
+        name,
+        "invalidName",
+        "Mời bạn nhập tên sản phẩm"
+    );
+
+    isValid &=
+        validation.checkEmpty(
+            price,
+            "invalidPrice",
+            "Mời bạn nhập giá sản phẩm"
+        ) &&
+        validation.checkNumberPrice(
+            price,
+            "invalidPrice",
+            "Mời bạn nhập giá tiền là số"
+        );
+
+    isValid &= validation.checkEmpty(
+        screen,
+        "invalidScreen",
+        "Mời bạn nhập màn hình"
+    );
+
+    isValid &= validation.checkEmpty(
+        backCamera,
+        "invalidBackCamera",
+        "Mời bạn nhập camera sau"
+    );
+
+    isValid &= validation.checkEmpty(
+        frontCamera,
+        "invalidFrontCamera",
+        "Mời bạn nhập camera trước"
+    );
+
+    isValid &= validation.checkEmpty(
+        img,
+        "invalidImg",
+        "Mời bạn nhập hình ảnh"
+    );
+
+    isValid &= validation.checkSelect(
+        "productType",
+        "invalidType",
+        "Mời bạn chọn loại sản phẩm"
+    );
+
+    isValid &= validation.checkEmpty(desc, "invalidDesc", "Mời bạn nhập mô tả");
+    if (!isValid) return null;
 
     const product = new Product(
         id,
@@ -94,6 +152,17 @@ const handleUpdate = (id) => {
         desc,
         type
     );
+
+    return product;
+};
+
+/**
+ * handleUpdate
+ */
+const handleUpdate = (id) => {
+    const product = getInfoProduct(id);
+
+    if (product === null) return;
 
     const promise = Api.updateData(product);
 
@@ -114,29 +183,16 @@ getEleId("btnAddProduct").addEventListener("click", () => {
         "Thêm Sản Phẩm";
     const addButton = `<button class="btn btn-success" onclick="handleAdd()">Thêm</button>`;
     document.getElementsByClassName("modal-footer")[0].innerHTML = addButton;
+
+    getEleId("formProduct").reset();
+
+    closeInvalid();
 });
 
 const handleAdd = () => {
-    const name = getEleId("productName").value;
-    const price = getEleId("productPrice").value;
-    const screen = getEleId("productScreen").value;
-    const backCamera = getEleId("productBackCamera").value;
-    const frontCamera = getEleId("productFrontCamera").value;
-    const img = getEleId("productImg").value;
-    const type = getEleId("productType").value;
-    const desc = getEleId("productDesc").value;
+    const product = getInfoProduct("");
 
-    const product = new Product(
-        "",
-        name,
-        price,
-        screen,
-        backCamera,
-        frontCamera,
-        img,
-        desc,
-        type
-    );
+    if (product === null) return;
 
     const promise = Api.addData(product);
 
@@ -262,4 +318,23 @@ const filterProduct = (type, productList) => {
             return productList;
         }
     }
+};
+
+const closeInvalid = () => {
+    getEleId("invalidName").innerHTML = "";
+    getEleId("invalidName").style.display = "none";
+    getEleId("invalidPrice").innerHTML = "";
+    getEleId("invalidPrice").style.display = "none";
+    getEleId("invalidScreen").innerHTML = "";
+    getEleId("invalidScreen").style.display = "none";
+    getEleId("invalidBackCamera").innerHTML = "";
+    getEleId("invalidBackCamera").style.display = "none";
+    getEleId("invalidFrontCamera").innerHTML = "";
+    getEleId("invalidFrontCamera").style.display = "none";
+    getEleId("invalidImg").innerHTML = "";
+    getEleId("invalidImg").style.display = "none";
+    getEleId("invalidType").innerHTML = "";
+    getEleId("invalidType").style.display = "none";
+    getEleId("invalidDesc").innerHTML = "";
+    getEleId("invalidDesc").style.display = "none";
 };
