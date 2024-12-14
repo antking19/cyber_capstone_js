@@ -35,8 +35,8 @@ const renderListProduct = (data) => {
                 <td>${desc}</td>
                 <td>${type}</td>
                 <td>
-                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="handleEdit('${id}')">Edit</button>
-                    <button class="btn btn-danger" onclick="handleDelete('${id}')">Delete</button>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="handleEdit('${id}')">Sửa</button>
+                    <button class="btn btn-danger" onclick="handleDelete('${id}')">Xóa</button>
                 </td>
             </tr>
         `;
