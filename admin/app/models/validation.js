@@ -13,6 +13,18 @@ class Validation {
         return true;
     }
 
+    checkEmptyNumber(value, divId, mess) {
+        if (value === 0) {
+            getEleId(divId).innerHTML = mess;
+            getEleId(divId).style.display = "block";
+            return false;
+        }
+
+        getEleId(divId).innerHTML = "";
+        getEleId(divId).style.display = "none";
+        return true;
+    }
+
     checkNumberPrice(value, divId, mess) {
         const letter = /^[0-9]+$/;
         if (value.match(letter)) {
