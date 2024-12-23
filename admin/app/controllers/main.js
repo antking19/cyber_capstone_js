@@ -21,6 +21,7 @@ const renderListProduct = (data) => {
             desc,
             type,
         } = product;
+
         content += `
             <tr>
                 <th>${i + 1}</th>
@@ -81,7 +82,7 @@ window.handleEdit = handleEdit;
  */
 const getInfoProduct = (id) => {
     const name = getEleId("productName").value;
-    const price = getEleId("productPrice").value;
+    const price = getEleId("productPrice").value * 1;
     const screen = getEleId("productScreen").value;
     const backCamera = getEleId("productBackCamera").value;
     const frontCamera = getEleId("productFrontCamera").value;
@@ -96,17 +97,11 @@ const getInfoProduct = (id) => {
         "Mời bạn nhập tên sản phẩm"
     );
 
-    isValid &=
-        validation.checkEmpty(
-            price,
-            "invalidPrice",
-            "Mời bạn nhập giá sản phẩm"
-        ) &&
-        validation.checkNumberPrice(
-            price,
-            "invalidPrice",
-            "Mời bạn nhập giá tiền là số"
-        );
+    isValid &= validation.checkEmptyNumber(
+        price,
+        "invalidPrice",
+        "Mời bạn nhập giá sản phẩm"
+    );
 
     isValid &= validation.checkEmpty(
         screen,
